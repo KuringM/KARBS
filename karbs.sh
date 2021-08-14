@@ -14,7 +14,7 @@ while getopts ":a:r:b:p:h" o; do case "${o}" in
 	*) printf "Invalid option: -%s\\n" "$OPTARG" && exit 1 ;;
 esac done
 
-[ -z "$dotfilesrepo" ] && dotfilesrepo="https://github.com/KuringMIN/Dotfiles"
+[ -z "$dotfilesrepo" ] && dotfilesrepo="https://github.com/KuringMIN/Dotfiles.git"
 [ -z "$progsfile" ] && progsfile="https://raw.githubusercontent.com/KuringMIN/KARBS/master/progs.csv"
 [ -z "$aurhelper" ] && aurhelper="paru"
 [ -z "$repobranch" ] && repobranch="master"
@@ -111,6 +111,12 @@ pipinstall() { \
 	yes | pip install "$1"
 	}
 
+npminstall() {\
+	dialog --title "KARBS Installation" --infobox "Installing the nodejs package \`$1\` ($n of $total). $1 $2" 5 70
+	[ -x "$(command -v "npm")" ] || installpkg npm >/dev/null 2>&1
+	yes | npm install -g "$1"
+}
+
 installationloop() { \
 	([ -f "$progsfile" ] && cp "$progsfile" /tmp/progs.csv) || curl -Ls "$progsfile" | sed '/^#/d' > /tmp/progs.csv
 	total=$(wc -l < /tmp/progs.csv)
@@ -122,17 +128,28 @@ installationloop() { \
 			"A") aurinstall "$program" "$comment" ;;
 			"G") gitmakeinstall "$program" "$comment" ;;
 			"P") pipinstall "$program" "$comment" ;;
+			"N") npminstall "$program" "$comment" ;;
 			*) maininstall "$program" "$comment" ;;
 		esac
 	done < /tmp/progs.csv ;}
 	
-putgitrepo() { # Downloads a gitrepo $1 and places the files in $2 only overwriting conflicts
+putDotRepo() { # Downloads a Dotfiles gitrepo $1 and places the files in $2 only overwriting conflicts
 	dialog --infobox "Downloading and installing config files..." 4 60
 	[ -z "$3" ] && branch="master" || branch="$repobranch"
 	dir=$(mktemp -d)
 	[ ! -d "$2" ] && mkdir -p "$2"
 	chown "$name":wheel "$dir" "$2"
 	sudo -u "$name" git clone --bare --recursive --single-branch -b "$branch" --depth 1 --recurse-submodules "$1" "$dir" >/dev/null 2>&1
+	sudo -u "$name" cp -rfT "$dir" "$2"
+	}
+
+putgitrepo() { # Downloads a gitrepo $1 and places the files in $2 only overwriting conflicts
+	dialog --infobox "Downloading and installing config files..." 4 60
+	[ -z "$3" ] && branch="master" || branch="$repobranch"
+	dir=$(mktemp -d)
+	[ ! -d "$2" ] && mkdir -p "$2"
+	chown "$name":wheel "$dir" "$2"
+	sudo -u "$name" git clone --recursive  -b "$branch" --depth 1 --recurse-submodules "$1" "$dir" >/dev/null 2>&1
 	sudo -u "$name" cp -rfT "$dir" "$2"
 	}
 
@@ -204,7 +221,12 @@ dialog --title "LARBS Installation" --infobox "Finally, installing \`libxft-bgra
 yes | sudo -u "$name" $aurhelper -S libxft-bgra-git >/dev/null 2>&1
 
 # Install the dotfiles in the user's home directory
-putgitrepo "$dotfilesrepo" "/home/$name" "$repobranch"
+putDotRepo "$dotfilesrepo" "/home/$name" "$repobranch"
+## Install nvim configuration and scripts
+nvimrepo="https://github.com/KuringMIN/nvim.git"
+scriptsrepo="https://github.com/KuringMIN/scripts.git"
+putgitrepo "$nvimrepo" "/home/$name/.config" "$repobranch"
+putgitrepo "$scriptsrepo" "/home/$name/scripts" "$repobranch"
 sudo -u "$name" git --git-dir=/home/$name/.myconf/ --work-tree=/home/$name checkout
 rm -f "/home/$name/README.md"
 # Create default urls file if none exists.
