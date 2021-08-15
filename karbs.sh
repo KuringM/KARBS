@@ -14,7 +14,7 @@ while getopts ":a:r:b:p:h" o; do case "${o}" in
 	*) printf "Invalid option: -%s\\n" "$OPTARG" && exit 1 ;;
 esac done
 
-[ -z "$dotfilesrepo" ] && dotfilesrepo="https://github.com/KuringMIN/Dotfiles.git"
+[ -z "$dotfilesrepo" ] && dotfilesrepo="git@github.com:KuringMIN/Dotfiles.git"
 [ -z "$progsfile" ] && progsfile="https://raw.githubusercontent.com/KuringMIN/KARBS/master/progs.csv"
 [ -z "$aurhelper" ] && aurhelper="paru"
 [ -z "$repobranch" ] && repobranch="master"
@@ -223,10 +223,11 @@ yes | sudo -u "$name" $aurhelper -S libxft-bgra-git >/dev/null 2>&1
 # Install the dotfiles in the user's home directory
 putDotRepo "$dotfilesrepo" "/home/$name" "$repobranch"
 ## Install nvim configuration and scripts
-nvimrepo="https://github.com/KuringMIN/nvim.git"
-scriptsrepo="https://github.com/KuringMIN/scripts.git"
+nvimrepo="git@github.com:KuringMIN/nvim.git"
+scriptsrepo="git@github.com:KuringMIN/scripts.git"
 putgitrepo "$nvimrepo" "/home/$name/.config" "$repobranch"
 putgitrepo "$scriptsrepo" "/home/$name/scripts" "$repobranch"
+
 sudo -u "$name" git --git-dir=/home/$name/.myconf/ --work-tree=/home/$name checkout
 rm -f "/home/$name/README.md"
 # Create default urls file if none exists.
