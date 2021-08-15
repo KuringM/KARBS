@@ -134,7 +134,7 @@ installationloop() { \
 	done < /tmp/progs.csv ;}
 	
 putDotRepo() { # Downloads a Dotfiles gitrepo $1 and places the files in $2 only overwriting conflicts
-	dialog --infobox "Downloading and installing config files..." 4 60
+	dialog --infobox "Downloading Dotfiles..." 4 60
 	[ -z "$3" ] && branch="master" || branch="$repobranch"
 	dir=$(mktemp -d)
 	[ ! -d "$2" ] && mkdir -p "$2"
@@ -215,30 +215,38 @@ manualinstall $aurhelper || error "Failed to install AUR helper."
 # installs each needed program the way required. Be sure to run this only after
 # the user has been created and has priviledges to run sudo without a password
 # and all build dependencies are installed.
-installationloop
+#installationloop
 
 dialog --title "LARBS Installation" --infobox "Finally, installing \`libxft-bgra\` to enable color emoji in suckless software without crashes." 5 70
 yes | sudo -u "$name" $aurhelper -S libxft-bgra-git >/dev/null 2>&1
 
 # Install the dotfiles in the user's home directory
-putDotRepo "$dotfilesrepo" "/home/$name" "$repobranch"
+putDotRepo "$dotfilesrepo" "/home/$name/.myconf" "$repobranch"
+sudo -u "$name" git --git-dir=/home/$name/.myconf/ --work-tree=/home/$name checkout
+
 ## Install nvim configuration and scripts
 nvimrepo="https://github.com/KuringMIN/nvim.git"
-scriptsrepo="https://github.com:KuringMIN/scripts.git"
-putgitrepo "$nvimrepo" "/home/$name/.config" "$repobranch"
+scriptsrepo="https://github.com/KuringMIN/scripts.git"
+putgitrepo "$nvimrepo" "/home/$name/.config/nvim" "$repobranch"
 putgitrepo "$scriptsrepo" "/home/$name/scripts" "$repobranch"
-
-sudo -u "$name" git --git-dir=/home/$name/.myconf/ --work-tree=/home/$name checkout
-rm -f "/home/$name/README.md"
 
 # Most important command! Get rid of the beep!
 systembeepoff
 
-# Make zsh the default shell for the user.
+# Make zsh the default shell for the user. And install zimfw!
 chsh -s /bin/zsh "$name" >/dev/null 2>&1
-sudo -u "$name" ln /home/.config/zsh/conf/zshrc /home/.config/zsh/.zshrc
-sudo -u "$name" ln /home/.config/zsh/conf/zimrc /home/.config/zsh/.zimrc
 sudo -u "$name" mkdir -p "/home/$name/.local/share/zsh/"
+sudo -u "$name" ln /home/$name/.config/zsh/init/zshenv /home/$name/.config/zsh/.zshenv
+sudo -u "$name" ln /home/$name/.config/zsh/init/zshrc /home/$name/.config/zsh/.zshrc
+sudo -u "$name" ln /home/$name/.config/zsh/init/zlogin /home/$name/.config/zsh/.zlogin
+sudo -u "$name" ln /home/$name/.config/zsh/init/zimrc /home/$name/.config/zsh/.zimrc
+sudo -u "$name" mkdir -p "/home/$name/.config/.zim/"
+sudo -u "$name" cp /home/$name/.config/zsh/init/zimfw.zsh /home/$name/.config/.zim
+cd /home/$name
+sudo -u "$name" zsh ~/.zim/zimfw.zsh install
+sudo -u "$name" zimfw install
+sudo -u "$name" zimfw update
+sudo -u "$name" zimfw upgrade
 
 # dbus UUID must be generated for Artix runit.
 dbus-uuidgen > /var/lib/dbus/machine-id
