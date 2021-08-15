@@ -205,11 +205,18 @@ newperms "%wheel ALL=(ALL) NOPASSWD: ALL"
 # Make pacman and paru colorful and adds eye candy on the progress bar because why not.
 grep -q "^Color" /etc/pacman.conf || sed -i "s/^#Color$/Color/" /etc/pacman.conf
 grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
+# Add archlinuxcn
+grep -q '\[archlinuxcn\]' /etc/pacman.conf || printf '\[archlinuxcn\]
+SigLevel = Optional TrustAll
+Server = https://mirrors.ustc.edu.cn/archlinuxcn/\$arch
+Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/\$arch' >> /etc/pacman.conf
 
 # Use all cores for compilation.
 sed -i "s/-j2/-j$(nproc)/;s/^#MAKEFLAGS/MAKEFLAGS/" /etc/makepkg.conf
 
 manualinstall $aurhelper || error "Failed to install AUR helper."
+# chinese aus
+if [ $aurhelper = "yay"]; then yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save; fi
 
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
@@ -242,11 +249,12 @@ sudo -u "$name" ln /home/$name/.config/zsh/init/zlogin /home/$name/.config/zsh/.
 sudo -u "$name" ln /home/$name/.config/zsh/init/zimrc /home/$name/.config/zsh/.zimrc
 sudo -u "$name" mkdir -p "/home/$name/.config/.zim/"
 sudo -u "$name" cp /home/$name/.config/zsh/init/zimfw.zsh /home/$name/.config/.zim
-cd /home/$name
-sudo -u "$name" zsh ~/.zim/zimfw.zsh install
-sudo -u "$name" zimfw install
-sudo -u "$name" zimfw update
-sudo -u "$name" zimfw upgrade
+sudo -u "$name" cd /home/$name
+# <++>need solving!
+#sudo -u "$name" zsh /home/$name/.config/.zim/zimfw.zsh install
+#sudo -u "$name" zimfw install
+#sudo -u "$name" zimfw update
+#sudo -u "$name" zimfw upgrade
 
 # dbus UUID must be generated for Artix runit.
 dbus-uuidgen > /var/lib/dbus/machine-id
