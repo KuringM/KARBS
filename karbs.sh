@@ -14,7 +14,7 @@ while getopts ":a:r:b:p:h" o; do case "${o}" in
 	*) printf "Invalid option: -%s\\n" "$OPTARG" && exit 1 ;;
 esac done
 
-[ -z "$dotfilesrepo" ] && dotfilesrepo="git@github.com:KuringMIN/Dotfiles.git"
+[ -z "$dotfilesrepo" ] && dotfilesrepo="https://github.com/KuringMIN/Dotfiles.git"
 [ -z "$progsfile" ] && progsfile="https://raw.githubusercontent.com/KuringMIN/KARBS/master/progs.csv"
 [ -z "$aurhelper" ] && aurhelper="paru"
 [ -z "$repobranch" ] && repobranch="master"
@@ -223,26 +223,21 @@ yes | sudo -u "$name" $aurhelper -S libxft-bgra-git >/dev/null 2>&1
 # Install the dotfiles in the user's home directory
 putDotRepo "$dotfilesrepo" "/home/$name" "$repobranch"
 ## Install nvim configuration and scripts
-nvimrepo="git@github.com:KuringMIN/nvim.git"
-scriptsrepo="git@github.com:KuringMIN/scripts.git"
+nvimrepo="https://github.com/KuringMIN/nvim.git"
+scriptsrepo="https://github.com:KuringMIN/scripts.git"
 putgitrepo "$nvimrepo" "/home/$name/.config" "$repobranch"
 putgitrepo "$scriptsrepo" "/home/$name/scripts" "$repobranch"
 
 sudo -u "$name" git --git-dir=/home/$name/.myconf/ --work-tree=/home/$name checkout
 rm -f "/home/$name/README.md"
-# Create default urls file if none exists.
-[ ! -f "/home/$name/.config/newsboat/urls" ] && echo "http://lukesmith.xyz/rss.xml
-https://notrelated.libsyn.com/rss
-https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA \"~Luke Smith (YouTube)\"
-https://www.archlinux.org/feeds/news/" > "/home/$name/.config/newsboat/urls"
-# make git ignore deleted LICENSE & README.md files
-git update-index --assume-unchanged "/home/$name/README.md" "/home/$name/LICENSE" "/home/$name/FUNDING.yml"
 
 # Most important command! Get rid of the beep!
 systembeepoff
 
 # Make zsh the default shell for the user.
 chsh -s /bin/zsh "$name" >/dev/null 2>&1
+sudo -u "$name" ln /home/.config/zsh/conf/zshrc /home/.config/zsh/.zshrc
+sudo -u "$name" ln /home/.config/zsh/conf/zimrc /home/.config/zsh/.zimrc
 sudo -u "$name" mkdir -p "/home/$name/.local/share/zsh/"
 
 # dbus UUID must be generated for Artix runit.
@@ -272,7 +267,7 @@ killall pulseaudio; sudo -u "$name" pulseaudio --start
 
 # This line, overwriting the `newperms` command above will allow the user to run
 # serveral important commands, `shutdown`, `reboot`, updating, etc. without a password.
-newperms "%wheel ALL=(ALL) ALL #LARBS
+newperms "%wheel ALL=(ALL) ALL #KARBS
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/systemctl suspend,/usr/bin/wifi-menu,/usr/bin/mount,/usr/bin/umount,/usr/bin/pacman -Syu,/usr/bin/pacman -Syyu,/usr/bin/packer -Syu,/usr/bin/packer -Syyu,/usr/bin/systemctl restart NetworkManager,/usr/bin/rc-service NetworkManager restart,/usr/bin/pacman -Syyu --noconfirm,/usr/bin/loadkeys,/usr/bin/paru,/usr/bin/pacman -Syyuw --noconfirm"
 
 # Last message! Install complete!
