@@ -105,6 +105,7 @@ A,neovim-nightly-bin,"Fork of Vim aiming to improve user experience, plugins, an
 ,feh,"Fast and light imlib2-based image viewer"
 ,htop,"Interactive process viewer"
 A,gotop-git,"A terminal based graphical activity monitor inspired by gtop and vtop"
+G,foo-Wallpaper-Feh-Gif,"just a loop who set wallpaper for display gif, support transparency"
 # applications
 ,mpd,"is a lightweight music daemon."
 ,mpc,"is a terminal interface for mpd."
