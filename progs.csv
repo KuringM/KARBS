@@ -59,8 +59,9 @@ A,fcitx5-pinyin-moegirl-rime,"Fcitx 5 Pinyin Dictionary from zh.wikipedia.org fo
 ,ranger,"Simple, vim-like file manager"
 ,pandoc,"Conversion between markup formats"
 ,poppler,"manipulates .pdfs and gives .pdf previews and other .pdf functions."
-,youtube-dl,"can download any YouTube video (or playlist or channel) when given the link."
 ,python-pdftotext,"Simple PDF text extraction"
+,youtube-dl,"can download any YouTube video (or playlist or channel) when given the link."
+,ffmpegthumbnailer,"Lightweight video thumbnailer that can be used by file managers."
 ,perl-image-exiftool,"Reader and rewriter of EXIF informations that supports raw files"
 ,mupdf,"Lightweight PDF and XPS viewer"
 # vim/nvim
@@ -86,6 +87,7 @@ A,neovim-nightly-bin,"Fork of Vim aiming to improve user experience, plugins, an
 ,calcurse,"A text-based personal organizer."
 ,cowsay,"Configurable talking cow (and a few other creatures)"
 ,fortune-mod,"The Fortune Cookie Program from BSD games"
+,maim,"can take quick screenshots at your request."
 ,lolcat,"aOkay, no unicorns. But rainbows!!Okay, no unicorns. But rainbows!!"
 ,tmux,"A terminal multiplexer"
 ,fzf,"is a fuzzy finder tool."
