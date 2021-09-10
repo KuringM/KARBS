@@ -124,6 +124,7 @@ A,brave-bin,"is an elegant browser with built-in adblocking, tor and other featu
 A,lazygit,"A simple terminal UI for git commands"
 A,haruna,"Video player built with Qt/QML on top of libmpv."
 A,yesplaymusic,"A third party music application for Netease Music"
+A,typora,"Typora will give you a seamless experience as both a reader and a writer."
 # My progs
 G,https://github.com/KuringMIN/dmenu.git,"Generic menu for X"
 G,https://github.com/KuringMIN/myDWM.git,"is the window manager."
