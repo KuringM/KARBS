@@ -111,6 +111,12 @@ pipinstall() { \
 	yes | pip install "$1"
 	}
 
+pip2install() { \
+	dialog --title "KARBS Installation" --infobox "Installing the Python package \`$1\` ($n of $total). $1 $2" 5 70
+	[ -x "$(command -v "pip2")" ] || installpkg python2-pip >/dev/null 2>&1
+	yes | pip2 install "$1"
+	}
+
 npminstall() {\
 	dialog --title "KARBS Installation" --infobox "Installing the nodejs package \`$1\` ($n of $total). $1 $2" 5 70
 	[ -x "$(command -v "npm")" ] || installpkg npm >/dev/null 2>&1
@@ -128,6 +134,7 @@ installationloop() { \
 			"A") aurinstall "$program" "$comment" ;;
 			"G") gitmakeinstall "$program" "$comment" ;;
 			"P") pipinstall "$program" "$comment" ;;
+			"P2") pip2install "$program" "$comment" ;;
 			"N") npminstall "$program" "$comment" ;;
 			*) maininstall "$program" "$comment" ;;
 		esac
@@ -254,6 +261,16 @@ dbus-uuidgen > /var/lib/dbus/machine-id
 
 # Use system notifications for Brave on Artix
 echo "export \$(dbus-launch)" > /etc/profile.d/dbus.sh
+
+# create dwm.desktop
+[ -d /usr/share/xsessions ] || mkdir /usr/share/xsessions
+[ ! -f /usr/share/xsessions/dwm.desktop ] && printf '[Desktop Entry]
+Encoding=UTF-8
+Name=Dwm
+Comment=the dynamic window manager
+Exec=dwm
+Icon=dwm
+Type=XSession' > /usr/share/xsessions/dwm.desktop
 
 # Tap to click
 [ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'Section "InputClass"
