@@ -212,11 +212,13 @@ newperms "%wheel ALL=(ALL) NOPASSWD: ALL"
 # Make pacman and paru colorful and adds eye candy on the progress bar because why not.
 grep -q "^Color" /etc/pacman.conf || sed -i "s/^#Color$/Color/" /etc/pacman.conf
 grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
+# Make pacman supports multilib
+grep -q "#[multilib]" /etc/pacman.conf || set -i "s/^#[multilib]$/[multilib]" /etc/pacman.conf
 # Add archlinuxcn
-grep -q '\[archlinuxcn\]' /etc/pacman.conf || printf '\[archlinuxcn\]
+grep -q '[archlinuxcn]' /etc/pacman.conf || printf '[archlinuxcn]
 SigLevel = Optional TrustAll
-Server = https://mirrors.ustc.edu.cn/archlinuxcn/\$arch
-Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/\$arch' >> /etc/pacman.conf
+Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch
+Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch' >> /etc/pacman.conf
 
 # Use all cores for compilation.
 sed -i "s/-j2/-j$(nproc)/;s/^#MAKEFLAGS/MAKEFLAGS/" /etc/makepkg.conf
@@ -256,6 +258,16 @@ sudo -u "$name" ln /home/$name/.config/zsh/init/zimrc /home/$name/.config/zsh/.z
 sudo -u "$name" mkdir -p "/home/$name/.config/.zim/"
 sudo -u "$name" cp /home/$name/.config/zsh/init/zimfw.zsh /home/$name/.config/.zim
 
+# Make user dirs
+sudo -u "$name" mkdir -p "/home/$name/user/Desktop"
+sudo -u "$name" mkdir -p "/home/$name/user/Downloads"
+sudo -u "$name" mkdir -p "/home/$name/user/Documents"
+sudo -u "$name" mkdir -p "/home/$name/user/Templates"
+sudo -u "$name" mkdir -p "/home/$name/user/Public"
+sudo -u "$name" mkdir -p "/home/$name/user/Music"
+sudo -u "$name" mkdir -p "/home/$name/user/Pictures"
+sudo -u "$name" mkdir -p "/home/$name/user/Videos"
+
 # dbus UUID must be generated for Artix runit.
 dbus-uuidgen > /var/lib/dbus/machine-id
 
@@ -273,14 +285,14 @@ Icon=dwm
 Type=XSession' > /usr/share/xsessions/dwm.desktop
 
 # Tap to click
-[ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'Section "InputClass"
-        Identifier "libinput touchpad catchall"
-        MatchIsTouchpad "on"
-        MatchDevicePath "/dev/input/event*"
-        Driver "libinput"
-	# Enable left mouse button by tapping
-	Option "Tapping" "on"
-EndSection' > /etc/X11/xorg.conf.d/40-libinput.conf
+# [ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'Section "InputClass"
+#         Identifier "libinput touchpad catchall"
+#         MatchIsTouchpad "on"
+#         MatchDevicePath "/dev/input/event*"
+#         Driver "libinput"
+# 	# Enable left mouse button by tapping
+# 	Option "Tapping" "on"
+# EndSection' > /etc/X11/xorg.conf.d/40-libinput.conf
 
 # Fix fluidsynth/pulseaudio issue.
 grep -q "OTHER_OPTS='-a pulseaudio -m alsa_seq -r 48000'" /etc/conf.d/fluidsynth ||
