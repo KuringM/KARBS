@@ -251,6 +251,7 @@ systembeepoff
 # Make zsh the default shell for the user. And install zimfw!
 chsh -s /bin/zsh "$name" >/dev/null 2>&1
 sudo -u "$name" mkdir -p "/home/$name/.local/share/zsh/"
+sudo -u "$name" touch "/home/$name/.local/share/zsh/history"
 sudo -u "$name" ln /home/$name/.config/zsh/init/zshenv /home/$name/.config/zsh/.zshenv
 sudo -u "$name" ln /home/$name/.config/zsh/init/zshrc /home/$name/.config/zsh/.zshrc
 sudo -u "$name" ln /home/$name/.config/zsh/init/zlogin /home/$name/.config/zsh/.zlogin
