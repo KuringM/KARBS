@@ -92,6 +92,8 @@ A,neovim-nightly-bin,"Fork of Vim aiming to improve user experience, plugins, an
 A,wps-office-cn,"wps"
 A,wps-office-mui-zh-cn,"wps chinese language packages"
 A,ttf-wps-fonts,"wps symbol	fonts"
+#bluetooth
+,blueman-git,"Blueman is a full featured Bluetooth manager written in Python and using GTK."
 # CLI
 A,update-grub,"Simple wrapper around grub-mkconfig"
 ,calcurse,"A text-based personal organizer."
@@ -137,6 +139,7 @@ A,lazygit,"A simple terminal UI for git commands"
 A,haruna,"Video player built with Qt/QML on top of libmpv."
 A,yesplaymusic,"A third party music application for Netease Music"
 A,typora,"Typora will give you a seamless experience as both a reader and a writer."
+A,motrix-bin,"A full-featured download manager"
 # My progs
 G,https://github.com/KuringMIN/dmenu.git,"Generic menu for X"
 G,https://github.com/KuringMIN/myDWM.git,"is the window manager."
