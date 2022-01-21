@@ -99,6 +99,17 @@ gitmakeinstall() {
 	make install >/dev/null 2>&1
 	cd /tmp || return 1 ;}
 
+mygitmakeinstall() {
+	[ ! -d "$repodir/myrepos" ] && mkdir -p "$repodir/myrepos"
+	progname="$(basename "$1" .git)"
+	dir="$repodir/myrepos/$progname"
+	dialog --title "KARBS Installation" --infobox "Installing MK's \`$progname\` ($n of $total) via \`git\` and \`make\`. $(basename "$1") $2" 5 70
+	sudo -u "$name" git clone --depth 1 "$1" "$dir" >/dev/null 2>&1 || { cd "$dir" || return 1 ; sudo -u "$name" git pull --force origin master;}
+	cd "$dir" || exit 1
+	make >/dev/null 2>&1
+	make install >/dev/null 2>&1
+	cd /tmp || return 1 ;}
+
 aurinstall() { \
 	dialog --title "KARBS Installation" --infobox "Installing \`$1\` ($n of $total) from the AUR. $1 $2" 5 70
 	echo "$aurinstalled" | grep -q "^$1$" && return 1
@@ -133,6 +144,7 @@ installationloop() { \
 		case "$tag" in
 			"A") aurinstall "$program" "$comment" ;;
 			"G") gitmakeinstall "$program" "$comment" ;;
+			"M") mygitmakeinstall "$program" "$comment" ;;
 			"P") pipinstall "$program" "$comment" ;;
 			"P2") pip2install "$program" "$comment" ;;
 			"N") npminstall "$program" "$comment" ;;
